@@ -1,33 +1,51 @@
 package com.phonebook.tests;
 
-import com.phonebook.model.User;
+import com.phonebook.data.UserData;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class CreateAccountTests extends TestBase{
 
-    //precondition: user should be logged out
     @BeforeMethod
     public void ensurePrecondition() {
-        if (!app.getUser().isLoginLinkPresent()){
-            app.getUser().clickOnSignOutButton();
+        if (!app.getUser().isLoginLinkPresent()) {
+           app.getUser().clickOnSignOutButton();
         }
     }
 
     @Test
-    public void existedUserRegistrationNegativeTest() {
-        //click on Login link
+    public void createAccountPositiveTest() {
+
         app.getUser().clickOnLoginLink();
-        //enter email
-        //enter password
-        app.getUser().fillLoginRegistrationForm(new User()
-                .setEmail("kr@gmail.com")
-                .setPassword("Kr1234567$"));
-        //click on Registration button
+        app.getUser().fillRegisterLoginForm(new User()
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnRegistrationButton();
-        //assert warning appears
-        Assert.assertTrue(app.getUser().isAlertPresent());
+
+        Assert.assertTrue(app.getUser().isSignOutButtonPresent());
+    }
+
+    @Test
+    public void createExistedAccountNegativeTest() {
+        SoftAssert softAssert = new SoftAssert();
+
+        logger.info("Existed account data are " + UserData.EMAIL + " " + UserData.PASSWORD);
+
+        app.getUser().clickOnLoginLink();
+        app.getUser().fillRegisterLoginForm(new User()
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
+        app.getUser().clickOnRegistrationButton();
+
+        softAssert.assertTrue(app.getUser().isAlertPresent());
+        softAssert.assertTrue(app.getUser().isError409Present());
+        softAssert.assertAll();
+
+        app.getUser().clearLoginRegisterForm();
+
     }
 
 }
