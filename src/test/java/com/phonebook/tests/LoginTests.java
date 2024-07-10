@@ -1,6 +1,7 @@
 package com.phonebook.tests;
 
-import com.phonebook.model.User;
+import com.phonebook.data.UserData;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -8,56 +9,75 @@ import org.testng.annotations.Test;
 import java.awt.*;
 import java.io.IOException;
 
-public class LoginTests extends TestBase{
+public class LoginTests extends TestBase {
 
     @BeforeMethod
     public void ensurePrecondition() {
-        if (!app.getUser().isLoginLinkPresent()){
+        //  System.out.println("Before Method");
+        if (!app.getUser().isLoginLinkPresent()) {
             app.getUser().clickOnSignOutButton();
         }
     }
 
     @Test(priority = 1)
     public void loginPositiveTest() {
-        //click on Login link
+
+        logger.info("Login with data --> " + UserData.EMAIL + " *** " + UserData.PASSWORD);
+
         app.getUser().clickOnLoginLink();
-        //enter email
-        app.getUser().fillLoginRegistrationForm(new User()
-                .setEmail("kr@gmail.com")
-                .setPassword("Kr1234567$"));
-        //click on Registration button
+        app.getUser().fillRegisterLoginForm(new User()
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
-        //assert Sign out button is displayed
+
         Assert.assertTrue(app.getUser().isSignOutButtonPresent());
     }
 
     @Test(priority = 2)
-    public void loginNegativeWithoutPasswordTest() {
-        //click on Login link
+    public void loginNegativeWithoutEmailTest() {
         app.getUser().clickOnLoginLink();
-        //enter email
-        app.getUser().fillLoginRegistrationForm(new User()
-                .setEmail("kr@gmail.com"));
-        //click on Registration button
+
+        app.getUser().fillRegisterLoginForm(new User()
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
-        //assert Sign out button is displayed
+
         Assert.assertTrue(app.getUser().isAlertPresent());
     }
 
-    @Test
-    public void loginRegisteredUserPositiveTestWithScreenCast() throws IOException, AWTException {
-        app.getUser().deleteScreenCast("record");
+    @Test(priority = 1)
+    public void loginPositiveTestWithScreenCast() throws IOException, AWTException {
+
         app.getUser().startRecording();
+
         app.getUser().clickOnLoginLink();
-        app.getUser().fillLoginRegistrationForm(new User()
-                .setEmail("kr@gmail.com")
-                .setPassword("Kr1234567$"));
-
+        app.getUser().fillRegisterLoginForm(new User()
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
-        app.getUser().pause(2000);
 
+        Assert.assertTrue(app.getUser().isSignOutButtonPresent());
+        app.getUser().pause(3000);
         app.getUser().stopRecording();
     }
 
-
 }
+
+//    @BeforeClass
+//    public void beforeClassPrecondition() {
+//        System.out.println("Before Class");
+//    }
+//
+//    @BeforeTest
+//    public void beforeTestPrecondition() {
+//        System.out.println("Before Test");
+//    }
+//
+//    @AfterClass
+//    public void afterClassPostCondition() {
+//        System.out.println("After Class");
+//    }
+//
+//    @AfterClass
+//    public void afterTestPostCondition() {
+//        System.out.println("After Test");
+//    }
