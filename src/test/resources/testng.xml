@@ -1,9 +1,9 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
-<suite name="Smoky" verbose="1" >
-    <test name="Smoky" >
+<suite name="QuickTest" verbose="1">
+    <test name="Quick">
         <classes>
-            <class name="com.phonebook.tests.LoginTests" />
+            <class name="com.phonebook.tests.HomePageTests"/>
         </classes>
     </test>
 
